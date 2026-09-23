@@ -17,58 +17,64 @@ export function ParticleCanvas({ triggerBurst }) {
     window.addEventListener('resize', handleResize);
 
     let animId;
-    class Particle {
-      constructor(x, y, isHeart = false) {
-        this.x = x || Math.random() * canvas.width;
-        this.y = y || canvas.height + 20;
-        this.size = isHeart ? Math.random() * 16 + 10 : Math.random() * 6 + 3;
-        this.speedY = Math.random() * -1.8 - 0.8;
-        this.speedX = Math.random() * 1 - 0.5;
-        this.opacity = Math.random() * 0.7 + 0.3;
-        this.rotation = Math.random() * 360;
-        this.rotSpeed = Math.random() * 2 - 1;
-        this.isHeart = isHeart;
-        this.color = ['#FBBF24', '#F59E0B', '#FDE047', '#EAB308'][Math.floor(Math.random() * 4)];
+
+    class HeartParticle {
+      constructor(x, y, isBurst = false) {
+        this.x = x ?? Math.random() * canvas.width;
+        this.y = y ?? (canvas.height + 20 + Math.random() * 30);
+        this.size = isBurst ? Math.random() * 18 + 14 : Math.random() * 14 + 10;
+        this.speedY = isBurst ? -(Math.random() * 3 + 2) : -(Math.random() * 0.9 + 0.5);
+        this.speedX = isBurst ? (Math.random() * 4 - 2) : (Math.random() * 0.6 - 0.3);
+        this.swaySpeed = Math.random() * 0.003 + 0.001;
+        this.swayOffset = Math.random() * Math.PI * 2;
+        this.opacity = isBurst ? 1 : Math.random() * 0.5 + 0.25;
+        this.fadeSpeed = isBurst ? 0.008 : 0.0015;
+        this.rotation = Math.random() * 20 - 10;
+        this.rotSpeed = Math.random() * 0.4 - 0.2;
       }
 
-      update() {
+      update(time) {
         this.y += this.speedY;
-        this.x += this.speedX + Math.sin(this.y * 0.02) * 0.5;
+        this.x += this.speedX + Math.sin(time * this.swaySpeed + this.swayOffset) * 0.4;
         this.rotation += this.rotSpeed;
-        this.opacity -= 0.003;
+        this.opacity -= this.fadeSpeed;
       }
 
       draw(ctx) {
+        if (this.opacity <= 0) return;
         ctx.save();
         ctx.translate(this.x, this.y);
         ctx.rotate((this.rotation * Math.PI) / 180);
         ctx.globalAlpha = Math.max(0, this.opacity);
-
-        if (this.isHeart) {
-          ctx.font = `${this.size}px serif`;
-          ctx.fillText('💛', 0, 0);
-        } else {
-          ctx.fillStyle = this.color;
-          ctx.beginPath();
-          ctx.arc(0, 0, this.size, 0, Math.PI * 2);
-          ctx.fill();
-        }
+        ctx.font = `${Math.round(this.size)}px serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('💛', 0, 0);
         ctx.restore();
       }
     }
 
-    const render = () => {
+    // Seed initial ambient floating hearts across the screen height
+    for (let i = 0; i < 18; i++) {
+      const p = new HeartParticle(Math.random() * canvas.width, Math.random() * canvas.height);
+      particlesRef.current.push(p);
+    }
+
+    let lastTime = performance.now();
+
+    const render = (now) => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      if (Math.random() < 0.08 && particlesRef.current.length < 50) {
-        particlesRef.current.push(new Particle(null, null, Math.random() > 0.4));
+      // Spawn ambient gentle floating hearts periodically (max 30 hearts on screen)
+      if (Math.random() < 0.04 && particlesRef.current.length < 35) {
+        particlesRef.current.push(new HeartParticle());
       }
 
       for (let i = particlesRef.current.length - 1; i >= 0; i--) {
         const p = particlesRef.current[i];
-        p.update();
+        p.update(now);
         p.draw(ctx);
-        if (p.opacity <= 0 || p.y < -30) {
+        if (p.opacity <= 0 || p.y < -40) {
           particlesRef.current.splice(i, 1);
         }
       }
@@ -76,7 +82,7 @@ export function ParticleCanvas({ triggerBurst }) {
       animId = requestAnimationFrame(render);
     };
 
-    render();
+    animId = requestAnimationFrame(render);
 
     return () => {
       window.removeEventListener('resize', handleResize);
@@ -84,41 +90,49 @@ export function ParticleCanvas({ triggerBurst }) {
     };
   }, []);
 
+  // Spawn extra burst of hearts when final bloom occurs
   useEffect(() => {
     if (triggerBurst) {
       const canvas = canvasRef.current;
       if (!canvas) return;
 
-      const newParticles = [];
-      for (let i = 0; i < 40; i++) {
-        const p = {
-          x: canvas.width / 2 + (Math.random() * 100 - 50),
-          y: canvas.height * 0.6,
-          size: Math.random() * 16 + 12,
-          speedY: Math.random() * -4 - 2,
-          speedX: Math.random() * 6 - 3,
+      const burstHearts = [];
+      for (let i = 0; i < 45; i++) {
+        const x = canvas.width / 2 + (Math.random() * 120 - 60);
+        const y = canvas.height * 0.55;
+        // Access class constructor dynamically inside canvas ref context
+        const heart = {
+          x,
+          y,
+          size: Math.random() * 18 + 12,
+          speedY: -(Math.random() * 3.5 + 1.5),
+          speedX: Math.random() * 5 - 2.5,
           opacity: 1,
-          rotation: Math.random() * 360,
-          rotSpeed: Math.random() * 4 - 2,
-          isHeart: true,
-          color: '#FBBF24',
+          fadeSpeed: 0.006,
+          rotation: Math.random() * 30 - 15,
+          rotSpeed: Math.random() * 0.6 - 0.3,
           update() {
             this.y += this.speedY;
             this.x += this.speedX;
-            this.opacity -= 0.005;
+            this.rotation += this.rotSpeed;
+            this.opacity -= this.fadeSpeed;
           },
           draw(ctx) {
+            if (this.opacity <= 0) return;
             ctx.save();
             ctx.translate(this.x, this.y);
+            ctx.rotate((this.rotation * Math.PI) / 180);
             ctx.globalAlpha = Math.max(0, this.opacity);
-            ctx.font = `${this.size}px serif`;
+            ctx.font = `${Math.round(this.size)}px serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
             ctx.fillText('💛', 0, 0);
             ctx.restore();
           }
         };
-        newParticles.push(p);
+        burstHearts.push(heart);
       }
-      particlesRef.current.push(...newParticles);
+      particlesRef.current.push(...burstHearts);
     }
   }, [triggerBurst]);
 

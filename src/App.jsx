@@ -117,10 +117,6 @@ export function App() {
       </div>
 
       <main className="app-container">
-        <button className="sound-toggle-btn" onClick={toggleSound} aria-label="Sonido">
-          {soundEnabled ? '🔊' : '🔇'}
-        </button>
-
         <Header
           showTitle={stage.showTitle}
           reasons={stage.reasons}
