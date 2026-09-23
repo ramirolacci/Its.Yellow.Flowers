@@ -78,7 +78,7 @@ export function ParticleCanvas({ triggerBurst }) {
         if (this.opacity <= 0) return;
         const sprite = getHeartSprite();
         ctx.save();
-        ctx.translate(this.x, this.y);
+        ctx.translate(this.x | 0, this.y | 0);
         ctx.rotate(this.rotation);
         ctx.globalAlpha = Math.max(0, this.opacity);
         ctx.drawImage(sprite, -20, -20, 40, 40);
@@ -87,7 +87,9 @@ export function ParticleCanvas({ triggerBurst }) {
     }
 
     // Seed initial ambient floating hearts
-    for (let i = 0; i < 18; i++) {
+    const isMobile = canvas.width < 500;
+    const initialHearts = isMobile ? 10 : 18;
+    for (let i = 0; i < initialHearts; i++) {
       particlesRef.current.push(
         new FloatingHeart(Math.random() * canvas.width, Math.random() * canvas.height)
       );
@@ -96,7 +98,8 @@ export function ParticleCanvas({ triggerBurst }) {
     const render = (now) => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      if (Math.random() < 0.04 && particlesRef.current.length < 35) {
+      const maxHearts = isMobile ? 16 : 30;
+      if (Math.random() < 0.04 && particlesRef.current.length < maxHearts) {
         particlesRef.current.push(new FloatingHeart());
       }
 
@@ -133,7 +136,8 @@ export function ParticleCanvas({ triggerBurst }) {
       if (!canvas) return;
 
       const burstParticles = [];
-      const totalSunflowers = 45;
+      const isMobile = canvas.width < 500;
+      const totalSunflowers = isMobile ? 30 : 45;
 
       for (let i = 0; i < totalSunflowers; i++) {
         const startX = canvas.width / 2 + (Math.random() * 180 - 90);
@@ -163,7 +167,7 @@ export function ParticleCanvas({ triggerBurst }) {
           draw(ctx) {
             if (this.opacity <= 0) return;
             ctx.save();
-            ctx.translate(this.x, this.y);
+            ctx.translate(this.x | 0, this.y | 0);
             ctx.rotate(this.rotation);
             ctx.globalAlpha = Math.max(0, this.opacity);
             ctx.drawImage(sprite, -24, -24, 48, 48);

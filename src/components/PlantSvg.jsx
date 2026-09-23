@@ -73,13 +73,6 @@ export function PlantSvg({ stage, stemHeight, visibleLeaves = 0, bloomSunflower 
           <stop offset="85%" stopColor="#1E0A02" />
           <stop offset="100%" stopColor="#120501" />
         </radialGradient>
-
-        <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
-          <feDropShadow dx="0" dy="8" stdDeviation="6" floodColor="#3C2415" floodOpacity="0.15"/>
-        </filter>
-        <filter id="flowerShadow" x="-30%" y="-30%" width="160%" height="160%">
-          <feDropShadow dx="0" dy="6" stdDeviation="5" floodColor="#3A1C06" floodOpacity="0.2"/>
-        </filter>
       </defs>
 
       {/* Pot Base Shadow */}
@@ -137,7 +130,6 @@ export function PlantSvg({ stage, stemHeight, visibleLeaves = 0, bloomSunflower 
         >
           <g
             className={`sunflower-bloom-wrapper ${bloomSunflower ? 'blooming' : ''}`}
-            filter="url(#flowerShadow)"
           >
             {/* Green Calyx / Sepals behind petals */}
             <g className="sepals-layer">
@@ -205,7 +197,7 @@ export function PlantSvg({ stage, stemHeight, visibleLeaves = 0, bloomSunflower 
       </g>
 
       {/* 4. Terracotta Pot */}
-      <g id="pot" filter="url(#softShadow)">
+      <g id="pot">
         <ellipse cx="150" cy="336" rx="56" ry="10" fill="#422517" />
         <ellipse cx="150" cy="336" rx="52" ry="7" fill="#2E180E" />
         <path d="M 95 342 C 96 385, 108 402, 122 406 C 132 409, 168 409, 178 406 C 192 402, 204 385, 205 342 Z" fill="url(#potGrad)" />
