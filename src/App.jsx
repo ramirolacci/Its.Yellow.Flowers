@@ -117,8 +117,9 @@ export function App() {
     <>
       <div className="background-decorations">
         <div className="bg-sun-glow"></div>
-        <ParticleCanvas triggerBurst={triggerBurst} />
       </div>
+
+      <ParticleCanvas triggerBurst={triggerBurst} />
 
       <main className="app-container">
         <Header
