@@ -42,7 +42,7 @@ const STAGES = [
     // Stage 3: Crece el tallo, mantiene 2° hoja (NO aparece hoja nueva)
     stemHeight: 170,
     visibleLeaves: 2,
-    reasons: ["Sos hermosa", "Sos divertida", "Sos mi hogar"],
+    reasons: ["Sos hermosa", "Sos divertida", "Sos mi mundo"],
     showTitle: true,
     showSpecial: false,
     btnText: "Está creciendo",
@@ -52,7 +52,7 @@ const STAGES = [
     // Stage 4: Tallo igual, aparece 3° hoja
     stemHeight: 170,
     visibleLeaves: 3,
-    reasons: ["Sos hermosa", "Sos divertida", "Sos mi hogar", "Sos auténtica"],
+    reasons: ["Sos hermosa", "Sos divertida", "Sos mi mundo", "Sos auténtica"],
     showTitle: true,
     showSpecial: false,
     btnText: "Está creciendo",
@@ -62,7 +62,7 @@ const STAGES = [
     // Stage 5: Crece el tallo y aparece 4° hoja
     stemHeight: 235,
     visibleLeaves: 4,
-    reasons: ["Sos hermosa", "Sos divertida", "Sos mi hogar", "Sos auténtica", "Sos inspiradora"],
+    reasons: ["Sos hermosa", "Sos divertida", "Sos mi mundo", "Sos auténtica", "Sos perfecta"],
     showTitle: true,
     showSpecial: true,
     btnText: "Regar con mas amor",
@@ -83,12 +83,20 @@ export function App() {
 
   const handleWater = () => {
     audioSynth.playWaterSound();
-    
+
     // Trigger water drop animation
     const newKey = Date.now();
     setDropsKey(newKey);
     setShowRipple(false);
     setTimeout(() => setShowRipple(true), 650);
+
+    if (bloomSunflower) {
+      setCurrentStage(0);
+      setBloomSunflower(false);
+      setShowModal(false);
+      setTriggerBurst(false);
+      return;
+    }
 
     if (stage.triggersModal) {
       setTimeout(() => {
@@ -145,8 +153,8 @@ export function App() {
 
         <footer className="footer-section">
           <button className="water-button" onClick={handleWater}>
-            <span>{bloomSunflower ? "¡Floreció! 💛" : stage.btnText}</span>
-            <span className="btn-emoji">{bloomSunflower ? "✨" : stage.btnEmoji}</span>
+            <span>{bloomSunflower ? "Floreció" : stage.btnText}</span>
+            <span className="btn-emoji">{bloomSunflower ? "💛" : stage.btnEmoji}</span>
           </button>
         </footer>
       </main>

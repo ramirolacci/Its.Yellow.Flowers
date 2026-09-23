@@ -4,7 +4,7 @@ export function Header({ showTitle, reasons, showSpecial }) {
   return (
     <header className="header-section">
       <h1 className={`main-title ${showTitle ? 'visible' : ''}`}>
-        Te amo porque:
+        Me encantas porque:
       </h1>
 
       <div className="reasons-list">
@@ -20,7 +20,7 @@ export function Header({ showTitle, reasons, showSpecial }) {
       </div>
 
       <div className={`special-phrase ${showSpecial ? 'visible' : ''}`}>
-        <span>Pero sobre todo te amo...</span>
+        <span>Pero sobre todo te amo</span>
       </div>
     </header>
   );
