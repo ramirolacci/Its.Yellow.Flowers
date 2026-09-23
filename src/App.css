@@ -413,3 +413,75 @@ body, #root {
 .modal-action-btn:active {
   transform: scale(0.97);
 }
+
+/* Mobile-Only Responsive Styles (max-width: 499px) - Desktop version remains 100% untouched */
+@media (max-width: 499px) {
+  .app-container {
+    height: 100dvh;
+    padding: max(1.2rem, env(safe-area-inset-top, 1.2rem)) 1rem max(1.5rem, env(safe-area-inset-bottom, 1.5rem)) 1rem;
+    justify-content: space-between;
+  }
+
+  .header-section {
+    min-height: 125px;
+    padding-top: 0.2rem;
+  }
+
+  .main-title {
+    font-size: 1.55rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .reasons-list {
+    gap: 0.3rem;
+  }
+
+  .reason-item {
+    font-size: 1.05rem;
+  }
+
+  .special-phrase {
+    margin-top: 0.4rem;
+    font-size: 1.1rem;
+  }
+
+  .plant-section {
+    flex: 1;
+    max-height: 54vh;
+    padding-bottom: 0.2rem;
+  }
+
+  .flower-svg {
+    max-height: 330px;
+    width: 100%;
+  }
+
+  .footer-section {
+    padding-bottom: max(0.4rem, env(safe-area-inset-bottom, 0.4rem));
+  }
+
+  .water-button {
+    padding: 0.85rem 2rem;
+    font-size: 1.1rem;
+    margin-bottom: 0.2rem;
+  }
+
+  .modal-card {
+    width: 92%;
+    padding: 1.8rem 1.2rem 1.4rem 1.2rem;
+    border-radius: 28px;
+  }
+
+  .modal-card h2 {
+    font-size: 1.35rem;
+  }
+
+  .modal-original-text {
+    font-size: 1.02rem;
+  }
+
+  .modal-action-btn {
+    padding: 0.85rem 1.2rem;
+    font-size: 1.05rem;
+  }
+}
