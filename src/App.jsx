@@ -9,7 +9,9 @@ import { audioSynth } from './utils/audio';
 
 const STAGES = [
   {
-    stemHeight: 25,
+    // Stage 0: Maceta + tallo verde base (sin hojas)
+    stemHeight: 50,
+    visibleLeaves: 0,
     reasons: [],
     showTitle: false,
     showSpecial: false,
@@ -17,7 +19,9 @@ const STAGES = [
     btnEmoji: "💛"
   },
   {
-    stemHeight: 85,
+    // Stage 1: Tallo igual, aparece 1° hoja
+    stemHeight: 50,
+    visibleLeaves: 1,
     reasons: ["Sos hermosa"],
     showTitle: true,
     showSpecial: false,
@@ -25,7 +29,9 @@ const STAGES = [
     btnEmoji: "💧"
   },
   {
-    stemHeight: 145,
+    // Stage 2: Crece el tallo y aparece 2° hoja
+    stemHeight: 110,
+    visibleLeaves: 2,
     reasons: ["Sos hermosa", "Sos divertida"],
     showTitle: true,
     showSpecial: false,
@@ -33,43 +39,42 @@ const STAGES = [
     btnEmoji: "🌱"
   },
   {
-    stemHeight: 205,
+    // Stage 3: Crece el tallo, mantiene 2° hoja (NO aparece hoja nueva)
+    stemHeight: 170,
+    visibleLeaves: 2,
     reasons: ["Sos hermosa", "Sos divertida", "Sos mi hogar"],
     showTitle: true,
     showSpecial: false,
-    btnText: "Un poco más",
-    btnEmoji: "✨"
+    btnText: "Está creciendo",
+    btnEmoji: "🌱"
   },
   {
-    stemHeight: 265,
+    // Stage 4: Tallo igual, aparece 3° hoja
+    stemHeight: 170,
+    visibleLeaves: 3,
     reasons: ["Sos hermosa", "Sos divertida", "Sos mi hogar", "Sos auténtica"],
     showTitle: true,
     showSpecial: false,
-    btnText: "Ya casi...",
-    btnEmoji: "🌻"
+    btnText: "Está creciendo",
+    btnEmoji: "🌱"
   },
   {
-    stemHeight: 305,
+    // Stage 5: Crece el tallo y aparece 4° hoja
+    stemHeight: 235,
+    visibleLeaves: 4,
     reasons: ["Sos hermosa", "Sos divertida", "Sos mi hogar", "Sos auténtica", "Sos inspiradora"],
     showTitle: true,
     showSpecial: true,
-    btnText: "Ver el final",
-    btnEmoji: "💛"
-  },
-  {
-    stemHeight: 310,
-    reasons: ["Sos hermosa", "Sos divertida", "Sos mi hogar", "Sos auténtica", "Sos inspiradora"],
-    showTitle: true,
-    showSpecial: true,
-    bloomSunflower: true,
-    btnText: "¡Floreció! 💛",
-    btnEmoji: "✨"
+    btnText: "Regar con mas amor",
+    btnEmoji: "💛",
+    triggersModal: true
   }
 ];
 
 export function App() {
   const [currentStage, setCurrentStage] = useState(0);
-  const [soundEnabled, setSoundEnabled] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [bloomSunflower, setBloomSunflower] = useState(false);
   const [dropsKey, setDropsKey] = useState(0);
   const [showRipple, setShowRipple] = useState(false);
   const [triggerBurst, setTriggerBurst] = useState(false);
@@ -85,28 +90,27 @@ export function App() {
     setShowRipple(false);
     setTimeout(() => setShowRipple(true), 650);
 
+    if (stage.triggersModal) {
+      setTimeout(() => {
+        setShowModal(true);
+      }, 400);
+      return;
+    }
+
     if (currentStage < STAGES.length - 1) {
       const nextStage = currentStage + 1;
       setTimeout(() => {
         setCurrentStage(nextStage);
         audioSynth.playGrowSound(nextStage);
-
-        if (STAGES[nextStage].bloomSunflower) {
-          audioSynth.playFanfareSound();
-          setTriggerBurst(true);
-        }
       }, 350);
     }
   };
 
-  const handleReplay = () => {
-    setCurrentStage(0);
-    setTriggerBurst(false);
-  };
-
-  const toggleSound = () => {
-    const isEnabled = audioSynth.toggleSound();
-    setSoundEnabled(isEnabled);
+  const handleRevealFlower = () => {
+    setShowModal(false);
+    setBloomSunflower(true);
+    setTriggerBurst(true);
+    audioSynth.playFanfareSound();
   };
 
   return (
@@ -128,19 +132,20 @@ export function App() {
           <PlantSvg
             stage={currentStage}
             stemHeight={stage.stemHeight}
-            bloomSunflower={stage.bloomSunflower}
+            visibleLeaves={stage.visibleLeaves}
+            bloomSunflower={bloomSunflower}
           />
         </section>
 
         <FinalCard
-          show={!!stage.bloomSunflower}
-          onReplay={handleReplay}
+          show={showModal}
+          onRevealFlower={handleRevealFlower}
         />
 
         <footer className="footer-section">
           <button className="water-button" onClick={handleWater}>
-            <span>{stage.btnText}</span>
-            <span className="btn-emoji">{stage.btnEmoji}</span>
+            <span>{bloomSunflower ? "¡Floreció! 💛" : stage.btnText}</span>
+            <span className="btn-emoji">{bloomSunflower ? "✨" : stage.btnEmoji}</span>
           </button>
         </footer>
       </main>
