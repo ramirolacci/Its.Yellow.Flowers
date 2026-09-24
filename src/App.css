@@ -54,9 +54,9 @@ body, #root {
   transform: translate(-50%, -50%);
   width: 600px;
   height: 600px;
-  background: radial-gradient(circle, rgba(253, 224, 71, 0.22) 0%, rgba(251, 191, 36, 0.06) 50%, rgba(0, 0, 0, 0) 75%);
+  background: radial-gradient(circle, rgba(253, 224, 71, 0.28) 0%, rgba(251, 191, 36, 0.12) 35%, rgba(251, 191, 36, 0.03) 60%, transparent 75%);
   border-radius: 50%;
-  filter: blur(30px);
+  pointer-events: none;
 }
 
 #particleCanvas {
@@ -73,12 +73,7 @@ body, #root {
   display: none !important;
 }
 
-.sound-toggle-btn:hover {
-  transform: scale(1.08);
-  background: rgba(255, 255, 255, 0.95);
-}
-
-/* Main Container App Card */
+/* Base Main Container App Card */
 .app-container {
   position: relative;
   z-index: 1;
@@ -91,29 +86,22 @@ body, #root {
   justify-content: space-between;
   align-items: center;
   padding: 2.5rem 1.5rem 2rem 1.5rem;
-  background: rgba(246, 243, 236, 0.85);
-  backdrop-filter: blur(12px);
+  background: rgba(246, 243, 236, 0.94);
   box-shadow: 0 12px 40px rgba(60, 36, 21, 0.08);
   overflow: hidden;
 }
 
-@media (min-width: 500px) {
-  .app-container {
-    height: 90vh;
-    border-radius: 36px;
-    border: 1px solid rgba(255, 255, 255, 0.6);
-  }
-}
-
-/* Header Section */
+/* Base Header Section */
 .header-section {
   width: 100%;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: flex-start;
   min-height: 180px;
   padding-top: 0.5rem;
+  flex-shrink: 0;
 }
 
 .main-title {
@@ -132,7 +120,7 @@ body, #root {
   transform: translateY(0);
 }
 
-/* Reasons List */
+/* Base Reasons List */
 .reasons-list {
   display: flex;
   flex-direction: column;
@@ -179,11 +167,12 @@ body, #root {
   50% { transform: scale(1.04); }
 }
 
-/* Plant Section */
+/* Base Plant Section */
 .plant-section {
   position: relative;
   width: 100%;
   flex: 1;
+  min-height: 0;
   display: flex;
   justify-content: center;
   align-items: flex-end;
@@ -198,22 +187,8 @@ body, #root {
 }
 
 /* SVG Plant Animations */
-.plant-stem,
-.leaf-group,
-.sunflower-head-anchor,
-.sunflower-bloom-wrapper,
-.water-button {
-  transform: translateZ(0);
-  -webkit-transform: translateZ(0);
-  will-change: transform;
-}
-
 .plant-stem {
   transition: y 0.7s cubic-bezier(0.34, 1.56, 0.64, 1), height 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.leaf-group {
-  transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
 }
 
 .sunflower-head-anchor {
@@ -223,7 +198,8 @@ body, #root {
 .sunflower-bloom-wrapper {
   transform: scale(0);
   opacity: 0;
-  transform-origin: 0px 0px;
+  transform-box: fill-box;
+  transform-origin: center center;
   transition: transform 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.8s ease;
 }
 
@@ -287,13 +263,14 @@ body, #root {
   100% { width: 70px; height: 18px; opacity: 0; }
 }
 
-/* Footer & Water Button */
+/* Base Footer & Water Button */
 .footer-section {
   width: 100%;
   display: flex;
   justify-content: center;
   padding-bottom: 0.5rem;
   z-index: 10;
+  flex-shrink: 0;
 }
 
 .water-button {
@@ -336,7 +313,7 @@ body, #root {
   transform: scale(1.25) rotate(10deg);
 }
 
-/* Modal Backdrop & Card Popup */
+/* Base Modal Backdrop & Card Popup */
 .modal-backdrop {
   position: absolute;
   inset: 0;
@@ -424,7 +401,104 @@ body, #root {
   transform: scale(0.97);
 }
 
-/* Mobile-Only Responsive Styles (max-width: 499px) - Desktop version remains 100% untouched */
+/* ========================================================== */
+/* MEDIA QUERIES PLACED AT THE VERY BOTTOM FOR PROPER CASCADE */
+/* ========================================================== */
+
+/* 1. Desktop Standard Screens (width >= 500px) */
+@media (min-width: 500px) {
+  .app-container {
+    height: min(760px, 90vh);
+    border-radius: 36px;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+  }
+
+  .header-section {
+    height: 205px;
+    min-height: 205px;
+    justify-content: flex-start;
+    flex-shrink: 0;
+  }
+
+  .main-title {
+    font-size: 1.95rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .reasons-list {
+    gap: 0.4rem;
+  }
+
+  .reason-item {
+    font-size: 1.2rem;
+  }
+
+  .special-phrase {
+    margin-top: 0.6rem;
+    font-size: 1.22rem;
+  }
+
+  .plant-section {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+  }
+
+  .flower-svg {
+    height: 100%;
+    max-height: 370px;
+  }
+
+  .water-button {
+    padding: 0.75rem 2.2rem;
+    font-size: 1.1rem;
+  }
+}
+
+/* 2. Notebook / Laptop Screen Optimization (width >= 500px AND vertical height <= 850px) */
+@media (min-width: 500px) and (max-height: 850px) {
+  .app-container {
+    height: min(660px, 92vh);
+    padding: 1.4rem 1.1rem 1.1rem 1.1rem;
+  }
+
+  .header-section {
+    height: 175px !important;
+    min-height: 175px !important;
+    justify-content: flex-start !important;
+  }
+
+  .main-title {
+    font-size: 1.7rem !important;
+    margin-bottom: 0.35rem !important;
+  }
+
+  .reasons-list {
+    gap: 0.32rem !important;
+  }
+
+  .reason-item {
+    font-size: 1.1rem !important;
+  }
+
+  .special-phrase {
+    margin-top: 0.45rem !important;
+    font-size: 1.12rem !important;
+  }
+
+  .flower-svg {
+    max-height: 315px !important;
+  }
+
+  .water-button {
+    padding: 0.65rem 1.8rem !important;
+    font-size: 1rem !important;
+  }
+}
+
+/* 3. Mobile-Only Responsive Styles (max-width: 499px) - Desktop version remains 100% untouched */
 @media (max-width: 499px) {
   .app-container {
     height: 100dvh;
@@ -442,8 +516,11 @@ body, #root {
   }
 
   .header-section {
-    min-height: 125px;
+    min-height: 130px;
+    height: auto;
     padding-top: 0.2rem;
+    padding-bottom: 0.2rem;
+    justify-content: flex-start;
   }
 
   .main-title {
@@ -466,12 +543,12 @@ body, #root {
 
   .plant-section {
     flex: 1;
-    max-height: 54vh;
+    max-height: none;
     padding-bottom: 0.2rem;
   }
 
   .flower-svg {
-    max-height: 330px;
+    max-height: 350px;
     width: 100%;
   }
 

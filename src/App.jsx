@@ -60,7 +60,7 @@ const STAGES = [
   },
   {
     // Stage 5: Crece el tallo y aparece 4° hoja
-    stemHeight: 235,
+    stemHeight: 225,
     visibleLeaves: 4,
     reasons: ["Sos hermosa", "Sos divertida", "Sos mi mundo", "Sos auténtica", "Sos perfecta"],
     showTitle: true,

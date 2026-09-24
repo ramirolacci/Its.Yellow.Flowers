@@ -2,9 +2,9 @@ import React from 'react';
 
 const LEAF_NODES = [
   { stemOffset: 45, side: 'left', angle: -25, scale: 0.9 },
-  { stemOffset: 95, side: 'right', angle: 25, scale: 0.95 },
-  { stemOffset: 145, side: 'left', angle: -28, scale: 1.0 },
-  { stemOffset: 195, side: 'right', angle: 28, scale: 0.95 }
+  { stemOffset: 90, side: 'right', angle: 25, scale: 0.95 },
+  { stemOffset: 135, side: 'left', angle: -28, scale: 1.0 },
+  { stemOffset: 175, side: 'right', angle: 28, scale: 0.95 }
 ];
 
 export function PlantSvg({ stage, stemHeight, visibleLeaves = 0, bloomSunflower }) {
@@ -105,16 +105,16 @@ export function PlantSvg({ stage, stemHeight, visibleLeaves = 0, bloomSunflower 
 
             const currentScale = isVisible ? node.scale : 0;
             const currentOpacity = isVisible ? 1 : 0;
+            const transX = 150;
 
             return (
               <g
                 key={index}
-                transform={`translate(150, ${leafY}) rotate(${node.angle}) scale(${currentScale})`}
+                transform={`translate(${transX}, ${leafY}) rotate(${node.angle}) scale(${currentScale})`}
                 style={{
                   opacity: currentOpacity,
-                  transition: 'transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease'
+                  transition: 'transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease'
                 }}
-                className="leaf-group"
               >
                 <path d={pathD} fill={grad} stroke="#286D26" strokeWidth="1" />
                 <path d={veinD} stroke="#235B21" strokeWidth="1.5" fill="none" opacity="0.6" />
